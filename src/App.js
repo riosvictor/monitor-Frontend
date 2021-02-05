@@ -6,6 +6,7 @@ import {
   Legend, LineSeries,
   Title, ValueAxis
 } from '@devexpress/dx-react-chart-material-ui';
+import { Plugin } from "@devexpress/dx-react-core";
 import { Backdrop, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
@@ -27,6 +28,12 @@ const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
+  },
+  chart: {
+    paddingRight: '20px',
+  },
+  title: {
+    whiteSpace: 'pre',
   },
 }));
 const format = () => tick => tick;
@@ -99,13 +106,13 @@ function App() {
   function loadData(dados){
     let total = 0
 
-    let computers = items.map(a => a.computer.replace('-', '_'))
+    let computers = dados.map(a => a.computer.replace('-', '_'))
     
     const dados_number = []
     const dados_finais = []
     
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i].serie.split(',').map(a => Number(a));
+    for (let i = 0; i < dados.length; i++) {
+      const item = dados[i].serie.split(',').map(a => Number(a));
 
       if (item.length > total)
         total = item.length
@@ -146,23 +153,24 @@ function App() {
       return obj
     })
 
-    setItems(dados_finais)
     console.log(dados_finais)
+    setItems(dados_finais)
   }
 
   useEffect(() => {
     const date = moment(new Date(selectedDate)).format("DD/MM/YYYY")
 
-    axios.get("https://api-monitor-utfpr.herokuapp.com/monitor", {
+    axios.get("http://127.0.0.1:5000/monitor", {
       headers: { 'Access-Control-Allow-Origin': '*', 'Accept': 'application/json' },
       params: {
         date, type
       }
     })
     .then(res => {
-      const result = res.data;
+      const result = res.data.data;
       console.log(result);
       loadData(result)
+      setTimeout(() => {}, 3000);
       setLoading(false);
     })
     .catch(err => {
@@ -229,22 +237,25 @@ function App() {
               labelComponent={ValueLabel}
             />
 
-            {items.length > 0 
-              ? 
-              Object.keys(items[0]).filter(a => a !== 'index').map((item, idx) => {
-                return (
-                  <LineSeries
-                    key={idx}
-                    name={item}
-                    valueField={item}
-                    argumentField="index"
-                  />
-                )
-              })
-              : 
-              null
-            }
+            <Plugin name="Bars">
 
+              {items.length > 0 
+                ? 
+                Object.keys(items[0]).filter(a => a !== 'index').map((item, idx) => {
+                  return (
+                    <LineSeries
+                      key={idx}
+                      name={item}
+                      valueField={item}
+                      argumentField="index"
+                    />
+                  )
+                })
+                : 
+                null
+              }
+
+            </Plugin>
             
             <Legend position="bottom" rootComponent={Root} itemComponent={Item} labelComponent={Label} />
             <Title
