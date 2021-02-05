@@ -160,7 +160,7 @@ function App() {
   useEffect(() => {
     const date = moment(new Date(selectedDate)).format("DD/MM/YYYY")
 
-    axios.get("http://127.0.0.1:5000/monitor", {
+    axios.get("https://api-monitor-utfpr.herokuapp.com/monitor", {
       headers: { 'Access-Control-Allow-Origin': '*', 'Accept': 'application/json' },
       params: {
         date, type
