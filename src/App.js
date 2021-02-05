@@ -62,14 +62,6 @@ const legendItemBase = ({ classes, ...restProps }) => (
 const Root = withStyles(legendStyles, { name: 'LegendRoot' })(legendRootBase);
 const Label = withStyles(legendLabelStyles, { name: 'LegendLabel' })(legendLabelBase);
 const Item = withStyles(legendItemStyles, { name: 'LegendItem' })(legendItemBase);
-const demoStyles = () => ({
-  chart: {
-    paddingRight: '20px',
-  },
-  title: {
-    whiteSpace: 'pre',
-  },
-});
 const ValueLabel = (props) => {
   const { text } = props;
   return (
